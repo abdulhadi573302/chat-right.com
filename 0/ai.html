@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>AI Website</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="container">
+		<h1>AI Website</h1>
+		<input type="text" id="user-input" placeholder="Ask me anything...">
+		<div id="response"></div>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>
+
+JavaScript:
+
+const userInput = document.getElementById('user-input');
+const responseDiv = document.getElementById('response');
+
+userInput.addEventListener('keypress', async (e) => {
+	if (e.key === 'Enter') {
+		const query = userInput.value;
+		const response = await fetch(`(link unavailable));
+		const answer = await response.json();
+		responseDiv.innerHTML = answer;
+	}
+});

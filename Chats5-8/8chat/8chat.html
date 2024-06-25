@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Example</title>
+</head>
+<body>
+    <div>
+        <label for="userInput">Enter your question:</label>
+        <input type="text" id="userInput" placeholder="Type your question here...">
+    </div>
+    <button id="sendButton">Send</button>
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('sendButton').addEventListener('click', function() {
+            // Get the user's input
+            const userInput = document.getElementById('userInput').value;
+
+            // Call the function to get the response
+            const response = getBotResponse(userInput);
+
+            // Display the response
+            document.getElementById('response').innerText = response;
+        });
+
+        function getBotResponse(message) {
+            // Generate responses based on keywords
+            const responses = {                
+                "hello": "Hi there! How can I help you?",
+                "What": "Hi there! How can I help you?",
+                "abdul Hadi": "This is Owner of this Website",
+                "abdulHadi": "This is Owner of this Website",
+                "abdul hadi": "This is Owner of this Website",
+                "abdulhadi": "This is Owner of this Website",
+                "how are you": "I am just a bot, but I am functioning as expected!",
+                "what is your name": "I am Abdul Hadi, your virtual assistant.",
+                "what is your father name": "My Father name is Rashid Malik.",
+                "help": "Sure, I'm here to help! What do you need assistance with?",
+                "bye": "Goodbye! Have a great day!",
+                "what is the weather": "I'm not equipped to provide real-time weather updates, but you can check a reliable weather website!",
+                "tell me a joke": "Why don't scientists trust atoms? Because they make up everything!",
+                "who created you": "I was created by OpenAI.",
+                "what can you do": "I can help answer your questions, provide information, and assist with various tasks.",
+                "how old are you": "I don't have an age, but I was launched by OpenAI in 2020.",
+                "what is AI": "AI stands for Artificial Intelligence, which is the simulation of human intelligence processes by machines.",
+                "what is your favorite color": "As an AI, I don't have preferences, but I can understand why you might like certain colors!",
+                "tell me something interesting": "Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3000 years old and still edible!",
+                "what is the capital of France": "The capital of France is Paris.",
+                "who is the president of the United States": "The current president of the United States is Joe Biden.",
+                "what is the time": "I'm unable to provide the current time. Please check your device's clock.",
+                "do you like pizza": "As an AI, I don't eat, but I understand that pizza is a very popular food!",
+                "tell me a fun fact": "Octopuses have three hearts. Two pump blood to the gills, while the third pumps it to the rest of the body.",
+                "how do you work": "I work using a complex set of algorithms and machine learning models developed by OpenAI.",
+                "what is the meaning of life": "This is a deeply philosophical question. Many people have different beliefs about the meaning of life.",
+                "can you drive": "I don't have a physical form, so I cannot drive.",
+                "what is the best programming language": "The best programming language depends on the task at hand. Popular choices include Python, JavaScript, and Java.",
+                "tell me a story": "Once upon a time in a faraway land, there was a chatbot that helped people by answering their questions...",
+                "do you have friends": "As an AI, I don't have friends, but I interact with many users like you!",
+                "what is your favorite book": "I don't read books, but I can provide information about many of them!",
+                "can you play music": "I can't play music directly, but I can suggest some great songs for you!",
+                "how do you learn": "I learn from a large dataset of text provided by OpenAI and through continuous updates and improvements.",
+                "what is your purpose": "My purpose is to assist users by providing information and answering questions.",
+                "can you help me with math": "Sure, I can help with basic math problems. Just ask!",
+                "what is the tallest mountain": "The tallest mountain in the world is Mount Everest.",
+                "who is your favorite singer": "As an AI, I don't have personal preferences, but I can tell you about many famous singers!",
+                "can you cook": "I can't cook, but I can share recipes and cooking tips!",
+                "tell me a riddle": "What has keys but can't open locks? A piano!",
+                "do you sleep": "I don't need sleep; I'm always here to help you.",
+                "what is your favorite movie": "I don't watch movies, but I can provide information about many popular films!",
+                "how do you handle data": "I process data using advanced algorithms and machine learning techniques to generate responses.",
+                "can you read my mind": "I can't read minds, but I can try to help with any questions you have.",
+                "what is the largest animal": "The largest animal in the world is the blue whale.",
+                "what are your hobbies": "I don't have hobbies, but I enjoy helping users like you!",
+                "do you have a job": "My job is to assist and provide information to users.",
+                "can you speak multiple languages": "I can understand and generate text in multiple languages, but I'm most fluent in English.",
+                "what is the speed of light": "The speed of light is approximately 299,792 kilometers per second (186,282 miles per second).",
+                "who was Albert Einstein": "Albert Einstein was a theoretical physicist who developed the theory of relativity.",
+                "what is quantum physics": "Quantum physics is the branch of physics that studies subatomic particles and their interactions.",
+                "do you have emotions": "I don't have emotions, but I can understand and respond to human emotions to some extent.",
+                "can you tell me the news": "I can't provide real-time news updates, but you can check reliable news websites for the latest information.",
+                "what is the internet": "The internet is a global network of interconnected computers that communicate through standardized protocols.",
+                "do you believe in aliens": "As an AI, I don't have beliefs, but the existence of extraterrestrial life is a topic of scientific inquiry and debate.",
+                "what is your favorite sport": "I don't play sports, but I can provide information about many different sports!",
+                "what is the biggest planet": "The biggest planet in our solar system is Jupiter.",
+                "do you have a name": "Yes, my name is ChatGPT.",
+                "what is an algorithm": "An algorithm is a step-by-step procedure for solving a problem or performing a task.",
+                "who was Nikola Tesla": "Nikola Tesla was an inventor and electrical engineer known for his contributions to the development of alternating current (AC) electrical systems.",
+                "what is blockchain": "Blockchain is a decentralized digital ledger that records transactions across many computers in a way that ensures security and transparency.",
+                "can you translate languages": "Yes, I can help with basic translations. What would you like translated?",
+                "what is the human brain": "The human brain is the central organ of the human nervous system, responsible for thought, memory, emotion, and many other functions.",
+                "what is AI used for": "AI is used in many fields, including healthcare, finance, education, and entertainment, to automate tasks and provide insights.",
+                "do you know Siri": "Siri is a virtual assistant created by Apple. We are both AI, but developed by different companies.",
+                "can you answer trivia": "Sure, ask me a trivia question and I'll do my best to answer!",
+                "what is photosynthesis": "Photosynthesis is the process by which green plants use sunlight to synthesize foods from carbon dioxide and water.",
+                "who is the richest person in the world": "The richest person in the world frequently changes. As of my last update, it's often between Jeff Bezos and Elon Musk.",
+                "what is the smallest country": "The smallest country in the world by land area is Vatican City.",
+                "what is climate change": "Climate change refers to long-term changes in temperature, precipitation, and other atmospheric conditions on Earth.",
+                "what is your favorite food": "I don't eat, but I can provide information about many different foods!",
+                "what is the hardest language to learn": "The hardest language to learn depends on your native language and other factors. Mandarin Chinese, Arabic, and Japanese are often considered challenging.",
+                "can you recommend a book": "Sure! 'To Kill a Mockingbird' by Harper Lee is a classic that many people enjoy.",
+                "what is the speed of sound": "The speed of sound in air is about 343 meters per second (1,125 feet per second).",
+                "who is the strongest superhero": "Many consider Superman to be one of the strongest superheroes.",
+                "what is the meaning of AI": "AI stands for Artificial Intelligence, which is the simulation of human intelligence by machines.",
+                "what is a black hole": "A black hole is a region of space where the gravitational pull is so strong that not even light can escape from it.",
+                "who invented the telephone": "The telephone was invented by Alexander Graham Bell.",
+                "what is the Great Wall of China": "The Great Wall of China is a series of fortifications built to protect against invasions and raids.",
+                "what is DNA": "DNA, or deoxyribonucleic acid, is the molecule that carries the genetic instructions for life.",
+                "who is the CEO of Tesla": "The CEO of Tesla is Elon Musk.",
+                "what is cryptocurrency": "Cryptocurrency is a type of digital or virtual currency that uses cryptography for security and operates independently of a central bank.",
+                "what is the tallest building in the world": "The tallest building in the world is the Burj Khalifa in Dubai.",
+                "who wrote '1984'": "'1984' was written by George Orwell.",
+                "what is machine learning": "Machine learning is a subset of AI that involves the use of algorithms and statistical models to enable computers to learn from and make predictions based on data.",
+                "what is the human genome": "The human genome is the complete set of genetic information for humans, encoded in DNA.",
+                "who is the current prime minister of the UK": "The current prime minister of the UK is Rishi Sunak.",
+                "what is renewable energy": "Renewable energy comes from sources that are naturally replenished, such as wind, solar, and hydro power.",
+                "what is a meme": "A meme is a humorous image, video, or text that is copied and spread rapidly by internet users.",
+                "can you solve riddles": "Sure, ask me a riddle and I'll try to solve it!",
+                "what is the Pythagorean theorem": "The Pythagorean theorem is a mathematical principle that states that in a right-angled triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides.",
+                "what is the most spoken language": "The most spoken language in the world by number of native speakers is Mandarin Chinese.",
+                "who was Leonardo da Vinci": "Leonardo da Vinci was an Italian polymath known for his works in art, science, and engineering.",
+                "what is gravity": "Gravity is the force that attracts two bodies towards each other, typically experienced as the force that gives weight to objects and causes them to fall to the ground when dropped.",
+                "what is the largest ocean": "The largest ocean on Earth is the Pacific Ocean.",
+                "what is a neuron": "A neuron is a nerve cell that transmits information through electrical and chemical signals in the brain and nervous system.",
+                "who wrote 'Harry Potter'": "'Harry Potter' was written by J.K. Rowling.",
+                "what is the solar system": "The solar system consists of the Sun and the celestial bodies that orbit it, including the eight planets and their moons.",
+                "what is global warming": "Global warming refers to the long-term increase in Earth's average surface temperature due to human activities, particularly the emission of greenhouse gases.",
+                "can you do magic tricks": "I can't perform magic tricks, but I can explain how some are done!",
+                "what is an atom": "An atom is the smallest unit of matter that retains the properties of an element.",
+                "what is the speed of a cheetah": "A cheetah can run at speeds of up to 60 to 70 miles per hour (97 to 113 kilometers per hour)."
+            };
+
+            // Normalize the input
+            const normalizedMessage = message.toLowerCase();
+
+            // Find the appropriate response
+            for (const keyword in responses) {
+                if (normalizedMessage.includes(keyword)) {
+                    return responses[keyword];
+                }
+            }
+
+            // Default response if no keywords match
+            return "Sorry, I do not understand your question. Could you please rephrase?";
+        }
+    </script>
+</body>
+</html>

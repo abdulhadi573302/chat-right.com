@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chat Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .chat-window {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            height: 400px;
+        }
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        .chat-input button {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            outline: none;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+        }
+        .user-message {
+            text-align: right;
+        }
+        .bot-message {
+            text-align: left;
+        }
+        .message-content {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+        .user-message .message-content {
+            background-color: #007bff;
+            color: white;
+        }
+        .bot-message .message-content {
+            background-color: #f0f0f0;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Chat Interface</h1>
+        </div>
+        <div class="chat-window" id="chat-window">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+            if (message) {
+                addMessage(message, 'user-message');
+                userInput.value = '';
+                // Simulate bot response
+                setTimeout(() => {
+                    const botResponse = getBotResponse(message);
+                    addMessage(botResponse, 'bot-message');
+                }, 1000);
+            }
+        }
+
+        function addMessage(text, className) {
+            const chatWindow = document.getElementById('chat-window');
+            const messageElement = document.createElement('div');
+            messageElement.className = `chat-message ${className}`;
+            messageElement.innerHTML = `<div class="message-content">${text}</div>`;
+            chatWindow.appendChild(messageElement);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            // Simple responses based on keywords
+            const responses = {
+                hello: "Hi there! How can I assist you today?",
+                help: "Sure, I'm here to help! What do you need assistance with?",
+                order: "Can you provide your order number so I can check the details?",
+                thanks: "You're welcome! If you have any more questions, feel free to ask.",
+                hours: "Our working hours are from 9 AM to 5 PM, Monday to Friday.",
+                location: "We are located at 123 Main Street, Anytown, USA.",
+                price: "Could you please specify which product's price you are inquiring about?",
+                contact: "You can contact us at (123) 456-7890 or email us at support@example.com.",
+                refund: "For refunds, please contact our support team with your order number.",
+                payment: "We accept credit cards, PayPal, and bank transfers.",
+                shipping: "Shipping typically takes 3-5 business days.",
+                warranty: "Our products come with a 1-year warranty.",
+                exchange: "To exchange a product, please contact our support team.",
+                return_policy: "You can return products within 30 days of purchase.",
+                feedback: "We appreciate your feedback! Please share your thoughts with us.",
+                weather: "Currently, the weather is sunny with a slight chance of rain in the afternoon.",
+                support: "Our support team is available 24/7 to assist you with any issues.",
+                appointment: "To schedule an appointment, please visit our website or call our support team.",
+                cancel_order: "To cancel an order, please provide your order number and we will process the cancellation.",
+                update_info: "You can update your information in the 'My Account' section of our website.",
+                newsletter: "You can subscribe to our newsletter for the latest updates and offers.",
+                promotion: "Currently, we have a 20% discount on all electronics.",
+                events: "Our upcoming events include a tech expo on July 15th and a webinar on AI trends on August 20th.",
+                job_openings: "We have several job openings. Please visit our careers page for more details.",
+                social_media: "Follow us on Facebook, Twitter, and Instagram for the latest updates.",
+                training: "We offer training sessions every Friday. Sign up on our website.",
+                faq: "For more information, please visit our FAQ page.",
+                new_products: "We have recently launched a new line of smart home devices.",
+                testimonials: "Read testimonials from our satisfied customers on our website.",
+                menu: "Our menu includes a variety of dishes. Please visit our website to see the full menu.",
+                reservation: "To make a reservation, please call us at (123) 456-7890.",
+                location_hours: "We have multiple locations. Please visit our website for details and hours of operation.",
+                special_offers: "Check out our website for current special offers and discounts.",
+                loyalty_program: "Join our loyalty program to earn points and receive exclusive offers.",
+                product_availability: "Please check our website for the availability of specific products.",
+                tech_support: "For technical support, please contact our support team at techsupport@example.com.",
+                mobile_app: "Download our mobile app from the App Store or Google Play.",
+                order_status: "To check the status of your order, please enter your order number on our website.",
+                shipping_info: "We offer free shipping on orders over $50.",
+                gift_cards: "Gift cards are available for purchase on our website.",
+                customer_service: "Our customer service team is available Monday through Friday, 9 AM to 5 PM.",
+                recipes: "Find delicious recipes on our blog.",
+                sustainability: "We are committed to sustainability. Learn more about our efforts on our website.",
+                press_inquiries: "For press inquiries, please contact our media relations team at press@example.com.",
+                partnerships: "We are open to partnerships. Please contact us at partnerships@example.com.",
+                volunteer: "Join our volunteer program and help make a difference in the community.",
+                donations: "We accept donations through our website to support various causes.",
+                sponsorship: "Interested in sponsorship opportunities? Contact us at sponsor@example.com.",
+                blog: "Read our latest blog posts for news, tips, and insights.",
+                community: "Join our community forum to connect with other customers.",
+                product_reviews: "Check out product reviews on our website before making a purchase.",
+                about_us: "Learn more about our company and our mission on the 'About Us' page.",
+                careers: "Explore career opportunities on our 'Careers' page.",
+                contact_info: "Find all our contact information on the 'Contact Us' page.",
+                store_locator: "Use our store locator to find a store near you.",
+                terms_conditions: "Read our terms and conditions on our website.",
+                privacy_policy: "Your privacy is important to us. Read our privacy policy for more information.",
+                community_guidelines: "Please follow our community guidelines when participating in our forums.",
+                code_of_conduct: "Our code of conduct outlines the standards we expect from our employees and partners.",
+                safety_info: "Read important safety information about our products on our website.",
+                shipping_returns: "Get detailed information about shipping and returns on our 'Shipping & Returns' page.",
+                technical_specs: "Find technical specifications for our products on their respective pages.",
+                user_manuals: "Download user manuals and guides from our support page.",
+                troubleshooting: "Visit our troubleshooting page for help with common issues.",
+                software_updates: "Check for the latest software updates on our website.",
+                workshops: "Sign up for our workshops to learn more about our products and services.",
+                webinars: "Join our webinars for expert insights and discussions.",
+                virtual_tours: "Take a virtual tour of our facilities on our website.",
+                success_stories: "Read success stories from our customers and partners.",
+                news: "Stay updated with the latest news and announcements on our news page.",
+                press_releases: "Read our latest press releases on our media page.",
+                events_calendar: "Check our events calendar for upcoming events and activities.",
+                membership: "Become a member to enjoy exclusive benefits and discounts.",
+                advisory_board: "Meet our advisory board and learn about their expertise.",
+                research: "Read about our latest research and innovations on our website.",
+                case_studies: "Explore case studies to see how our solutions are applied in real-world scenarios.",
+                white_papers: "Download our white papers for in-depth information on industry topics.",
+                e_books: "Access our collection of e-books on various subjects.",
+                newsletters: "Subscribe to our newsletters for the latest updates and insights.",
+                podcasts: "Listen to our podcasts for discussions with industry experts.",
+                videos: "Watch videos about our products and services on our video page.",
+                tutorials: "Follow our tutorials for step-by-step instructions and tips.",
+                faqs: "Find answers to frequently asked questions on our FAQ page.",
+                contact_support: "If you need further assistance, please contact our support team.",
+                default: "I'm sorry, I didn't understand that. Can you please rephrase?",
+                hello: "Hi there! How can I help you?",
+                how_are_you: "I am just a bot, but I am functioning as expected!",
+                what_is_your_name: "I am ChatGPT, your virtual assistant.",
+                help: "Sure, I'm here to help! What do you need assistance with?",
+                bye: "Goodbye! Have a great day!",
+                what_is_the_weather: "I'm not equipped to provide real-time weather updates, but you can check a reliable weather website!",
+                tell_me_a_joke: "Why don't scientists trust atoms? Because they make up everything!",
+                who_created_you: "I was created by OpenAI.",
+                what_can_you_do: "I can help answer your questions, provide information, and assist with various tasks.",
+                how_old_are_you: "I don't have an age, but I was launched by OpenAI in 2020.",
+                what_is_AI: "AI stands for Artificial Intelligence, which is the simulation of human intelligence processes by machines.",
+                what_is_your_favorite_color: "As an AI, I don't have preferences, but I can understand why you might like certain colors!",
+                tell_me_something_interesting: "Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3000 years old and still edible!",
+                what_is_the_capital_of_France: "The capital of France is Paris.",
+                who_is_the_president_of_othe_oUnited_oStates: "The current president of the United States is Joe Biden.",
+                what_is_the_time: "I'm unable to provide the current time. Please check your device's clock.",
+                do_you_like_pizza: "As an AI, I don't eat, but I understand that pizza is a very popular food!",
+                tell_me_a_fun_fact: "Octopuses have three hearts. Two pump blood to the gills, while the third pumps it to the rest of the body.",
+                how_do_you_work: "I work using a complex set of algorithms and machine learning models developed by OpenAI.",
+                what_is_the_meaning_of_life: "This is a deeply philosophical question. Many people have different beliefs about the meaning of life.",
+                can_you_drive: "I don't have a physical form, so I cannot drive.",
+                what_is_the_best_programming_language: "The best programming language depends on the task at hand. Popular choices include Python, JavaScript, and Java.",
+                tell_me_a_story: "Once upon a time in a faraway land, there was a chatbot that helped people by answering their questions...",
+                do_you_have_friends: "As an AI, I don't have friends, but I interact with many users like you!",
+                what_is_your_favorite_book: "I don't read books, but I can provide information about many of them!",
+                can_you_play_music: "I can't play music directly, but I can suggest some great songs for you!",
+                how_do_you_learn: "I learn from a large dataset of text provided by OpenAI and through continuous updates and improvements.",
+                what_is_your_purpose: "My purpose is to assist users by providing information and answering questions.",
+                can_you_help_me_with_math: "Sure, I can help with basic math problems. Just ask!",
+                what_is_the_tallest_mountain: "The tallest mountain in the world is Mount Everest.",
+                who_is_your_favorite_singer: "As an AI, I don't have personal preferences, but I can tell you about many famous singers!",
+                can_you_cook: "I can't cook, but I can share recipes and cooking tips!",
+                tell_me_a_riddle: "What has keys but can't open locks? A piano!",
+                do_you_sleep: "I don't need sleep; I'm always here to help you.",
+                what_is_your_favorite_movie: "I don't watch movies, but I can provide information about many popular films!",
+                how_do_you_handle_data: "I process data using advanced algorithms and machine learning techniques to generate responses.",
+                can_you_read_my_mind: "I can't read minds, but I can try to help with any questions you have.",
+                what_is_the_largest_animal: "The largest animal in the world is the blue whale.",
+                what_are_your_hobbies: "I don't have hobbies, but I enjoy helping users like you!",
+                do_you_have_a_job: "My job is to assist and provide information to users.",
+                can_you_speak_multiple_languages: "I can understand and generate text in multiple languages, but I'm most fluent in English.",
+                what_is_the_speed_of_light: "The speed of light is approximately 299,792 kilometers per second (186,282 miles per second).",
+                who_was_Albert_Einstein: "Albert Einstein was a theoretical physicist who developed the theory of relativity.",
+                what_is_quantum_physics: "Quantum physics is the branch of physics that studies subatomic particles and their interactions.",
+                do_you_have_emotions: "I don't have emotions, but I can understand and respond to human emotions to some extent.",
+                can_you_tell_me_the_news: "I can't provide real-time news updates, but you can check reliable news websites for the latest information.",
+                what_is_the_internet: "The internet is a global network of interconnected computers that communicate through standardized protocols.",
+                do_you_believe_in_aliens: "As an AI, I don't have beliefs, but the existence of extraterrestrial life is a topic of scientific inquiry and debate.",
+                what_is_your_favorite_sport: "I don't play sports, but I can provide information about many different sports!",
+                what_is_the_biggest_planet: "The biggest planet in our solar system is Jupiter.",
+                do_you_have_a_name: "Yes, my name is ChatGPT.",
+                what_is_an_algorithm: "An algorithm is a step-by-step procedure for solving a problem or performing a task.",
+                who_was_Nikola_Tesla: "Nikola Tesla was an inventor and electrical engineer known for his contributions to the development of alternating current (AC) electrical systems.",
+                what_is_blockchain: "Blockchain is a decentralized digital ledger that records transactions across many computers in a way that ensures security and transparency.",
+                can_you_translate_languages: "Yes, I can help with basic translations. What would you like translated?",
+                what_is_the_human_brain: "The human brain is the central organ of the human nervous system, responsible for thought, memory, emotion, and many other functions.",
+                what_is_AI_used_for: "AI is used in many fields, including healthcare, finance, education, and entertainment, to automate tasks and provide insights.",
+                do_you_know_Siri: "Siri is a virtual assistant created by Apple. We are both AI, but developed by different companies.",
+                can_you_answer_trivia: "Sure, ask me a trivia question and I'll do my best to answer!",
+                what_is_photosynthesis: "Photosynthesis is the process by which green plants use sunlight to synthesize foods from carbon dioxide and water.",
+                who_is_the_richest_person_in_the_world: "The richest person in the world frequently changes. As of my last update, it's often between Jeff Bezos and Elon Musk.",
+                what_is_the_smallest_country: "The smallest country in the world by land area is Vatican City.",
+                what_is_climate_change: "Climate change refers to long-term changes in temperature, precipitation, and other atmospheric conditions on Earth.",
+                what_is_your_favorite_food: "I don't eat, but I can provide information about many different foods!",
+                what_is_the_hardest_language_to_learn: "The hardest language to learn depends on your native language and other factors. Mandarin Chinese, Arabic, and Japanese are often considered challenging.",
+                can_you_recommend_a_book: "Sure! 'To Kill a Mockingbird' by Harper Lee is a classic that many people enjoy.",
+                what_is_the_speed_of_sound: "The speed of sound in air is about 343 meters per second (1,125 feet per second).",
+                who_is_the_strongest_superhero: "Many consider Superman to be one of the strongest superheroes.",
+                what_is_the_meaning_of_AI: "AI stands for Artificial Intelligence, which is the simulation of human intelligence by machines.",
+                what_is_a_black_hole: "A black hole is a region of space where the gravitational pull is so strong that not even light can escape from it.",
+                who_invented_the_telephone: "The telephone was invented by Alexander Graham Bell.",
+                what_is_the_Great_Wall_of_China: "The Great Wall of China is a series of fortifications built to protect against invasions and raids.",
+                what_is_DNA: "DNA, or deoxyribonucleic acid, is the molecule that carries the genetic instructions for life.",
+                who_is_the_CEO_of_Tesla: "The CEO of Tesla is Elon Musk.",
+                what_is_cryptocurrency: "Cryptocurrency is a type of digital or virtual currency that uses cryptography for security and operates independently of a central bank.",
+                what_is_the_talles_building_in_the_world: "The tallest building in the world is the Burj Khalifa in Dubai.",
+                who_wrote_1984_: "'1984' was written by George Orwell.",
+                what_is_machine_learning: "Machine learning is a subset of AI that involves the use of algorithms and statistical models to enable computers to learn from and make predictions based on data.",
+                what_is_the_human_genome: "The human genome is the complete set of genetic information for humans, encoded in DNA.",
+                who_is_the_current_prime_minister_of_the_UK: "The current prime minister of the UK is Rishi Sunak.",
+                what_is_renewable_energy: "Renewable energy comes from sources that are naturally replenished, such as wind, solar, and hydro power.",
+                what_is_a_meme: "A meme is a humorous image, video, or text that is copied and spread rapidly by internet users.",
+                can_you_solve_riddles: "Sure, ask me a riddle and I'll try to solve it!",
+                what_is_the_Pythagorean_theorem: "The Pythagorean theorem is a mathematical principle that states that in a right-angled triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides.",
+                what_is_the_most_spoken_language: "The most spoken language in the world by number of native speakers is Mandarin Chinese.",
+                who_was_Leonardo_da_Vinci: "Leonardo da Vinci was an Italian polymath known for his works in art, science, and engineering.",
+                what_is_gravity: "Gravity is the force that attracts two bodies towards each other, typically experienced as the force that gives weight to objects and causes them to fall to the ground when dropped.",
+                what_is_the_largest_ocean: "The largest ocean on Earth is the Pacific Ocean.",
+                what_is_a_neuron: "A neuron is a nerve cell that transmits information through electrical and chemical signals in the brain and nervous system.",
+                who_wrote_Harry_Potter: "'Harry Potter' was written by J.K. Rowling.",
+                what_is_the_solar_system: "The solar system consists of the Sun and the celestial bodies that orbit it, including the eight planets and their moons.",
+                what_is_global_warming: "Global warming refers to the long-term increase in Earth's average surface temperature due to human activities, particularly the emission of greenhouse gases.",
+                can_you_do_magic_tricks: "I can't perform magic tricks, but I can explain how some are done!",
+                what_is_an_atom: "An atom is the smallest unit of matter that retains the properties of an element.",
+                what_is_the_speed_of_a_cheetah: "A cheetah can run at speeds of up to 60 to 70 miles per hour (97 to 113 kilometers per hour).",
+            };
+
+            // Check message content for keywords and return the appropriate response
+            const lowerCaseMessage = message.toLowerCase();
+            for (let key in responses) {
+                if (lowerCaseMessage.includes(key)) {
+                    return responses[key];
+                }
+            }
+            return responses.default;
+        }
+    </script>
+</body>
+</html>

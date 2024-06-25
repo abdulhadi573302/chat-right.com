@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat Hub AI</title>
+<style>
+  .chat-history {
+    max-height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+</style>
+</head>
+<body>
+  <div class="chat-history" id="chatHistory">
+    <h3>User Interaction History</h3>
+    <ul id="historyList">
+      <!-- This list will contain the user interaction history -->
+    </ul>
+    <button onclick="saveHistory()">Save History</button>
+  </div>
+
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <div class="bot-response" id="botResponse">
+    <!-- Bot responses will be displayed here -->
+  </div>
+
+  <script>
+    // Function to initialize chat history from localStorage
+    window.onload = function() {
+      var history = JSON.parse(localStorage.getItem('chatHistory')) || [];
+      var historyList = document.getElementById('historyList');
+      
+      history.forEach(entry => {
+        var userMessageItem = document.createElement('li');
+        userMessageItem.textContent = `[${new Date(entry.timestamp).toLocaleString()}] User: ${entry.user}`;
+        historyList.appendChild(userMessageItem);
+
+        var botResponseItem = document.createElement('li');
+        botResponseItem.textContent = `[${new Date(entry.timestamp).toLocaleString()}] Bot: ${entry.bot}`;
+        historyList.appendChild(botResponseItem);
+      });
+    };
+
+    // Function to handle sending messages and receiving bot responses
+    function sendMessage() {
+      var userInput = document.getElementById('userInput').value.trim();
+      if (userInput === '') return;
+
+      // Display user input in history
+      var historyList = document.getElementById('historyList');
+      var userMessageItem = document.createElement('li');
+      var userTimestamp = new Date().getTime(); // Timestamp in milliseconds
+      userMessageItem.textContent = `[${new Date(userTimestamp).toLocaleString()}] User: ${userInput}`;
+      historyList.appendChild(userMessageItem);
+
+      // Clear input field
+      document.getElementById('userInput').value = '';
+
+      // Generate bot response
+      var botResponse = getBotResponse(userInput);
+
+      // Display bot response in history
+      var botResponseItem = document.createElement('li');
+      var botTimestamp = new Date().getTime(); // Timestamp in milliseconds
+      botResponseItem.textContent = `[${new Date(botTimestamp).toLocaleString()}] Bot: ${botResponse}`;
+      historyList.appendChild(botResponseItem);
+
+      // Save history to localStorage
+      saveToLocalStorage(userInput, botResponse, userTimestamp, botTimestamp);
+    }
+
+    // Function to generate bot response based on user input
+    function getBotResponse(userInput) {
+      // Simple responses based on keywords
+      const responses = {
+        hello: "Hi there! How can I assist you today?",
+        help: "Sure, I'm here to help! What do you need assistance with?",
+        order: "Can you provide your order number so I can check the details?",
+        thanks: "You're welcome! If you have any more questions, feel free to ask.",
+        default: "I'm sorry, I didn't understand that. Can you please rephrase?",
+                "hello": "Hi there! How can I help you?",
+                "What": "Hi there! How can I help you?",
+                "abdul Hadi": "This is Owner of this Website",
+                "abdulHadi": "This is Owner of this Website",
+                "abdul hadi": "This is Owner of this Website",
+                "abdulhadi": "This is Owner of this Website",
+                "how are you": "I am just a bot, but I am functioning as expected!",
+                "what is your name": "I am Abdul Hadi, your virtual assistant.",
+                "what is your father name": "My Father name is Rashid Malik.",
+                "help": "Sure, I'm here to help! What do you need assistance with?",
+                "bye": "Goodbye! Have a great day!",
+                "what is the weather": "I'm not equipped to provide real-time weather updates, but you can check a reliable weather website!",
+                "tell me a joke": "Why don't scientists trust atoms? Because they make up everything!",
+                "who created you": "I was created by OpenAI.",
+                "what can you do": "I can help answer your questions, provide information, and assist with various tasks.",
+                "how old are you": "I don't have an age, but I was launched by OpenAI in 2020.",
+                "what is AI": "AI stands for Artificial Intelligence, which is the simulation of human intelligence processes by machines.",
+                "what is your favorite color": "As an AI, I don't have preferences, but I can understand why you might like certain colors!",
+                "tell me something interesting": "Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3000 years old and still edible!",
+                "what is the capital of France": "The capital of France is Paris.",
+                "who is the president of the United States": "The current president of the United States is Joe Biden.",
+                "what is the time": "I'm unable to provide the current time. Please check your device's clock.",
+                "do you like pizza": "As an AI, I don't eat, but I understand that pizza is a very popular food!",
+                "tell me a fun fact": "Octopuses have three hearts. Two pump blood to the gills, while the third pumps it to the rest of the body.",
+                "how do you work": "I work using a complex set of algorithms and machine learning models developed by OpenAI.",
+                "what is the meaning of life": "This is a deeply philosophical question. Many people have different beliefs about the meaning of life.",
+                "can you drive": "I don't have a physical form, so I cannot drive.",
+                "what is the best programming language": "The best programming language depends on the task at hand. Popular choices include Python, JavaScript, and Java.",
+                "tell me a story": "Once upon a time in a faraway land, there was a chatbot that helped people by answering their questions...",
+                "do you have friends": "As an AI, I don't have friends, but I interact with many users like you!",
+                "what is your favorite book": "I don't read books, but I can provide information about many of them!",
+                "can you play music": "I can't play music directly, but I can suggest some great songs for you!",
+                "how do you learn": "I learn from a large dataset of text provided by OpenAI and through continuous updates and improvements.",
+                "what is your purpose": "My purpose is to assist users by providing information and answering questions.",
+                "can you help me with math": "Sure, I can help with basic math problems. Just ask!",
+                "what is the tallest mountain": "The tallest mountain in the world is Mount Everest.",
+                "who is your favorite singer": "As an AI, I don't have personal preferences, but I can tell you about many famous singers!",
+                "can you cook": "I can't cook, but I can share recipes and cooking tips!",
+                "tell me a riddle": "What has keys but can't open locks? A piano!",
+                "do you sleep": "I don't need sleep; I'm always here to help you.",
+                "what is your favorite movie": "I don't watch movies, but I can provide information about many popular films!",
+                "how do you handle data": "I process data using advanced algorithms and machine learning techniques to generate responses.",
+                "can you read my mind": "I can't read minds, but I can try to help with any questions you have.",
+                "what is the largest animal": "The largest animal in the world is the blue whale.",
+                "what are your hobbies": "I don't have hobbies, but I enjoy helping users like you!",
+                "do you have a job": "My job is to assist and provide information to users.",
+                "can you speak multiple languages": "I can understand and generate text in multiple languages, but I'm most fluent in English.",
+                "what is the speed of light": "The speed of light is approximately 299,792 kilometers per second (186,282 miles per second).",
+                "who was Albert Einstein": "Albert Einstein was a theoretical physicist who developed the theory of relativity.",
+                "what is quantum physics": "Quantum physics is the branch of physics that studies subatomic particles and their interactions.",
+                "do you have emotions": "I don't have emotions, but I can understand and respond to human emotions to some extent.",
+                "can you tell me the news": "I can't provide real-time news updates, but you can check reliable news websites for the latest information.",
+                "what is the internet": "The internet is a global network of interconnected computers that communicate through standardized protocols.",
+                "do you believe in aliens": "As an AI, I don't have beliefs, but the existence of extraterrestrial life is a topic of scientific inquiry and debate.",
+                "what is your favorite sport": "I don't play sports, but I can provide information about many different sports!",
+                "what is the biggest planet": "The biggest planet in our solar system is Jupiter.",
+                "do you have a name": "Yes, my name is ChatGPT.",
+                "what is an algorithm": "An algorithm is a step-by-step procedure for solving a problem or performing a task.",
+                "who was Nikola Tesla": "Nikola Tesla was an inventor and electrical engineer known for his contributions to the development of alternating current (AC) electrical systems.",
+                "what is blockchain": "Blockchain is a decentralized digital ledger that records transactions across many computers in a way that ensures security and transparency.",
+                "can you translate languages": "Yes, I can help with basic translations. What would you like translated?",
+                "what is the human brain": "The human brain is the central organ of the human nervous system, responsible for thought, memory, emotion, and many other functions.",
+                "what is AI used for": "AI is used in many fields, including healthcare, finance, education, and entertainment, to automate tasks and provide insights.",
+                "do you know Siri": "Siri is a virtual assistant created by Apple. We are both AI, but developed by different companies.",
+                "can you answer trivia": "Sure, ask me a trivia question and I'll do my best to answer!",
+                "what is photosynthesis": "Photosynthesis is the process by which green plants use sunlight to synthesize foods from carbon dioxide and water.",
+                "who is the richest person in the world": "The richest person in the world frequently changes. As of my last update, it's often between Jeff Bezos and Elon Musk.",
+                "what is the smallest country": "The smallest country in the world by land area is Vatican City.",
+                "what is climate change": "Climate change refers to long-term changes in temperature, precipitation, and other atmospheric conditions on Earth.",
+                "what is your favorite food": "I don't eat, but I can provide information about many different foods!",
+                "what is the hardest language to learn": "The hardest language to learn depends on your native language and other factors. Mandarin Chinese, Arabic, and Japanese are often considered challenging.",
+                "can you recommend a book": "Sure! 'To Kill a Mockingbird' by Harper Lee is a classic that many people enjoy.",
+                "what is the speed of sound": "The speed of sound in air is about 343 meters per second (1,125 feet per second).",
+                "who is the strongest superhero": "Many consider Superman to be one of the strongest superheroes.",
+                "what is the meaning of AI": "AI stands for Artificial Intelligence, which is the simulation of human intelligence by machines.",
+                "what is a black hole": "A black hole is a region of space where the gravitational pull is so strong that not even light can escape from it.",
+                "who invented the telephone": "The telephone was invented by Alexander Graham Bell.",
+                "what is the Great Wall of China": "The Great Wall of China is a series of fortifications built to protect against invasions and raids.",
+                "what is DNA": "DNA, or deoxyribonucleic acid, is the molecule that carries the genetic instructions for life.",
+                "who is the CEO of Tesla": "The CEO of Tesla is Elon Musk.",
+                "what is cryptocurrency": "Cryptocurrency is a type of digital or virtual currency that uses cryptography for security and operates independently of a central bank.",
+                "what is the tallest building in the world": "The tallest building in the world is the Burj Khalifa in Dubai.",
+                "who wrote '1984'": "'1984' was written by George Orwell.",
+                "what is machine learning": "Machine learning is a subset of AI that involves the use of algorithms and statistical models to enable computers to learn from and make predictions based on data.",
+                "what is the human genome": "The human genome is the complete set of genetic information for humans, encoded in DNA.",
+                "who is the current prime minister of the UK": "The current prime minister of the UK is Rishi Sunak.",
+                "what is renewable energy": "Renewable energy comes from sources that are naturally replenished, such as wind, solar, and hydro power.",
+                "what is a meme": "A meme is a humorous image, video, or text that is copied and spread rapidly by internet users.",
+                "can you solve riddles": "Sure, ask me a riddle and I'll try to solve it!",
+                "what is the Pythagorean theorem": "The Pythagorean theorem is a mathematical principle that states that in a right-angled triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides.",
+                "what is the most spoken language": "The most spoken language in the world by number of native speakers is Mandarin Chinese.",
+                "who was Leonardo da Vinci": "Leonardo da Vinci was an Italian polymath known for his works in art, science, and engineering.",
+                "what is gravity": "Gravity is the force that attracts two bodies towards each other, typically experienced as the force that gives weight to objects and causes them to fall to the ground when dropped.",
+                "what is the largest ocean": "The largest ocean on Earth is the Pacific Ocean.",
+                "what is a neuron": "A neuron is a nerve cell that transmits information through electrical and chemical signals in the brain and nervous system.",
+                "who wrote 'Harry Potter'": "'Harry Potter' was written by J.K. Rowling.",
+                "what is the solar system": "The solar system consists of the Sun and the celestial bodies that orbit it, including the eight planets and their moons.",
+                "what is global warming": "Global warming refers to the long-term increase in Earth's average surface temperature due to human activities, particularly the emission of greenhouse gases.",
+                "can you do magic tricks": "I can't perform magic tricks, but I can explain how some are done!",
+                "what is an atom": "An atom is the smallest unit of matter that retains the properties of an element.",
+                "what is the speed of a cheetah": "A cheetah can run at speeds of up to 60 to 70 miles per hour (97 to 113 kilometers per hour).",
+                hello: "Hi there! How can I assist you today?",
+        help: "Sure, I'm here to help! What do you need assistance with?",
+        order: "Can you provide your order number so I can check the details?",
+        thanks: "You're welcome! If you have any more questions, feel free to ask.",
+        hours: "Our working hours are from 9 AM to 5 PM, Monday to Friday.",
+        location: "We are located at 123 Main Street, Anytown, USA.",
+        price: "Could you please specify which product's price you are inquiring about?",
+        contact: "You can contact us at (123) 456-7890 or email us at support@example.com.",
+        refund: "For refunds, please contact our support team with your order number.",
+        payment: "We accept credit cards, PayPal, and bank transfers.",
+        shipping: "Shipping typically takes 3-5 business days.",
+        warranty: "Our products come with a 1-year warranty.",
+        exchange: "To exchange a product, please contact our support team.",
+        return_policy: "You can return products within 30 days of purchase.",
+        feedback: "We appreciate your feedback! Please share your thoughts with us.",
+        weather: "Currently, the weather is sunny with a slight chance of rain in the afternoon.",
+        support: "Our support team is available 24/7 to assist you with any issues.",
+        appointment: "To schedule an appointment, please visit our website or call our support team.",
+        cancel_order: "To cancel an order, please provide your order number and we will process the cancellation.",
+        update_info: "You can update your information in the 'My Account' section of our website.",
+        newsletter: "You can subscribe to our newsletter for the latest updates and offers.",
+        promotion: "Currently, we have a 20% discount on all electronics.",
+        events: "Our upcoming events include a tech expo on July 15th and a webinar on AI trends on August 20th.",
+        job_openings: "We have several job openings. Please visit our careers page for more details.",
+        social_media: "Follow us on Facebook, Twitter, and Instagram for the latest updates.",
+        training: "We offer training sessions every Friday. Sign up on our website.",
+        faq: "For more information, please visit our FAQ page.",
+        new_products: "We have recently launched a new line of smart home devices.",
+        testimonials: "Read testimonials from our satisfied customers on our website.",
+        menu: "Our menu includes a variety of dishes. Please visit our website to see the full menu.",
+        reservation: "To make a reservation, please call us at (123) 456-7890.",
+        location_hours: "We have multiple locations. Please visit our website for details and hours of operation.",
+        special_offers: "Check out our website for current special offers and discounts.",
+        loyalty_program: "Join our loyalty program to earn points and receive exclusive offers.",
+        product_availability: "Please check our website for the availability of specific products.",
+        tech_support: "For technical support, please contact our support team at techsupport@example.com.",
+        mobile_app: "Download our mobile app from the App Store or Google Play.",
+        order_status: "To check the status of your order, please enter your order number on our website.",
+        shipping_info: "We offer free shipping on orders over $50.",
+        gift_cards: "Gift cards are available for purchase on our website.",
+        customer_service: "Our customer service team is available Monday through Friday, 9 AM to 5 PM.",
+        recipes: "Find delicious recipes on our blog.",
+        sustainability: "We are committed to sustainability. Learn more about our efforts on our website.",
+        press_inquiries: "For press inquiries, please contact our media relations team at press@example.com.",
+        partnerships: "We are open to partnerships. Please contact us at partnerships@example.com.",
+        volunteer: "Join our volunteer program and help make a difference in the community.",
+        donations: "We accept donations through our website to support various causes.",
+        sponsorship: "Interested in sponsorship opportunities? Contact us at sponsor@example.com.",
+        blog: "Read our latest blog posts for news, tips, and insights.",
+        community: "Join our community forum to connect with other customers.",
+        product_reviews: "Check out product reviews on our website before making a purchase.",
+        about_us: "Learn more about our company and our mission on the 'About Us' page.",
+        careers: "Explore career opportunities on our 'Careers' page.",
+        contact_info: "Find all our contact information on the 'Contact Us' page.",
+        store_locator: "Use our store locator to find a store near you.",
+        terms_conditions: "Read our terms and conditions on our website.",
+        privacy_policy: "Your privacy is important to us. Read our privacy policy for more information.",
+        community_guidelines: "Please follow our community guidelines when participating in our forums.",
+        code_of_conduct: "Our code of conduct outlines the standards we expect from our employees and partners.",
+        safety_info: "Read important safety information about our products on our website.",
+        shipping_returns: "Get detailed information about shipping and returns on our 'Shipping & Returns' page.",
+        technical_specs: "Find technical specifications for our products on their respective pages.",
+        user_manuals: "Download user manuals and guides from our support page.",
+        troubleshooting: "Visit our troubleshooting page for help with common issues.",
+        software_updates: "Check for the latest software updates on our website.",
+        workshops: "Sign up for our workshops to learn more about our products and services.",
+        webinars: "Join our webinars for expert insights and discussions.",
+        virtual_tours: "Take a virtual tour of our facilities on our website.",
+        success_stories: "Read success stories from our customers and partners.",
+        news: "Stay updated with the latest news and announcements on our news page.",
+        press_releases: "Read our latest press releases on our media page.",
+        events_calendar: "Check our events calendar for upcoming events and activities.",
+        membership: "Become a member to enjoy exclusive benefits and discounts.",
+        advisory_board: "Meet our advisory board and learn about their expertise.",
+        research: "Read about our latest research and innovations on our website.",
+        case_studies: "Explore case studies to see how our solutions are applied in real-world scenarios.",
+        white_papers: "Download our white papers for in-depth information on industry topics.",
+        e_books: "Access our collection of e-books on various subjects.",
+        newsletters: "Subscribe to our newsletters for the latest updates and insights.",
+        podcasts: "Listen to our podcasts for discussions with industry experts.",
+        videos: "Watch videos about our products and services on our video page.",
+        tutorials: "Follow our tutorials for step-by-step instructions and tips.",
+        faqs: "Find answers to frequently asked questions on our FAQ page.",
+        contact_support: "If you need further assistance, please contact our support team.",
+        product_replacement_warranty_programs: "You can sign up for our product replacement and warranty programs by registering your product online or contacting our customer service team for assistance.",
+        environmental_stewardship_conservation_policies: "We prioritize environmental stewardship and conservation. Learn more about our policies on our website.",
+        social_responsibility_community_support_dedication: "Learn about our company's dedication to social responsibility and community support on our 'About Us' page.",
+        technology_gadgets_accessories_recommendations: "Explore our recommendations for technology gadgets and accessories on our website.",
+        product_repair_maintenance_services_signup: "You can sign up for our product repair and maintenance services by contacting our customer service team to schedule an appointment or enrolling in our maintenance plan.",
+        ethical_business_practices_corporate_governance_policies: "We adhere to ethical business practices and corporate governance. Learn more about our policies on our website.",
+        customer_care_service_dedication: "Learn about our company's dedication to customer care and service on our 'About Us' page.",
+        outdoor_sports_adventure_gear_recommendations: "Explore our recommendations for outdoor sports and adventure gear on our website.",
+        product_training_support_programs_signup: "You can sign up for our product training and support programs by visiting our training registration page or contacting our customer service team for assistance.",
+        community_involvement_charitable_contributions_policies: "We are dedicated to community involvement and charitable contributions. Learn more about our policies on our website.",
+        innovation_sustainability_initiatives_dedication: "Learn about our company's dedication to innovation and sustainability initiatives on our 'About Us' page.",
+        travel_gear_accessories_recommendations: "Explore our recommendations for travel gear and accessories on our website.",
+        product_testing_evaluation_services_signup: "You can sign up for our product testing and evaluation services by participating in our beta testing program or contacting our product testing team for more information.",
+        employee_development_workplace_diversity_inclusion_policies: "We promote employee development, workplace diversity, and inclusion. Learn more about our policies on our website.",
+        quality_innovation_dedication: "Learn about our company's dedication to quality and innovation on our 'About Us' page.",
+        smart_home_devices_automation_systems_recommendations: "Explore our recommendations for smart home devices and automation systems on our website.",
+        product_update_notifications_signup: "You can sign up for our product update notifications by subscribing to our newsletter or following us on social media.",
+        ethical_sourcing_fair_trade_practices_policies: "We support ethical sourcing and fair trade practices. Learn more about our policies on our website.",
+        customer_satisfaction_service_dedication: "Learn about our company's dedication to customer satisfaction and service on our 'About Us' page.",
+        office_supplies_stationery_recommendations: "Explore our recommendations for office supplies and stationery on our website.",
+        product_upgrade_replacement_services_signup: "You can sign up for our product upgrade and replacement services by contacting our customer service team for assistance.",
+        employee_well_being_workplace_safety_policies: "We prioritize employee well-being and workplace safety. Learn more about our policies on our website.",
+        environmental_sustainability_conservation_dedication: "Learn about our company's dedication to environmental sustainability and conservation on our 'About Us' page.",
+        home_office_furniture_supplies_recommendations: "Explore our recommendations for home office furniture and supplies on our website.",
+        product_support_repair_services_signup: "You can sign up for our product support and repair services by scheduling a service appointment on our website.",
+        innovation_sustainability_dedication: "Learn about our company's dedication to innovation and sustainability on our 'About Us' page.",
+        ethical_business_practices_corporate_integrity_policies: "We adhere to ethical business practices and corporate integrity. Learn more about our policies on our website.",
+        customer_care_satisfaction_dedication: "Learn about our company's dedication to customer care and satisfaction on our 'About Us' page."
+              };
+
+      // Check for a match in responses
+      const keys = Object.keys(responses);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const regex = new RegExp(`\\b${key}\\b`, 'i'); // Case insensitive match for whole word
+        if (regex.test(userInput)) {
+          return responses[key];
+        }
+      }
+
+      // Default response if no keyword matches
+      return responses.default;
+    }
+
+    // Function to save user interaction history to localStorage
+    function saveToLocalStorage(userInput, botResponse, userTimestamp, botTimestamp) {
+      var history = JSON.parse(localStorage.getItem('chatHistory')) || [];
+      history.push({ user: userInput, bot: botResponse, timestamp: userTimestamp });
+      history.push({ user: botResponse, bot: userInput, timestamp: botTimestamp }); // Save both directions for simplicity
+      localStorage.setItem('chatHistory', JSON.stringify(history));
+    }
+
+    // Function to save chat history as a downloadable HTML file
+    function saveHistory() {
+      var history = JSON.parse(localStorage.getItem('chatHistory')) || [];
+
+      var htmlContent = `<html><head><title>User Interaction History</title></head><body><h3>User Interaction History</h3><ul>`;
+      history.forEach((entry, index) => {
+        htmlContent += `<li><strong>Time:</strong> ${new Date(entry.timestamp).toLocaleString()}</li>`;
+        htmlContent += `<li><strong>User:</strong> ${entry.user}</li>`;
+        htmlContent += `<li><strong>Bot Response:</strong> ${entry.bot}</li><br>`;
+      });
+      htmlContent += `</ul></body></html>`;
+
+      var blob = new Blob([htmlContent], { type: 'text/html' });
+      var url = URL.createObjectURL(blob);
+
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'chat_history.html';
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chat Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .chat-window {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            height: 400px;
+        }
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        .chat-input button {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            outline: none;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+        }
+        .user-message {
+            text-align: right;
+        }
+        .bot-message {
+            text-align: left;
+        }
+        .message-content {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+        .user-message .message-content {
+            background-color: #007bff;
+            color: white;
+        }
+        .bot-message .message-content {
+            background-color: #f0f0f0;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Chat Interface</h1>
+        </div>
+        <div class="chat-window" id="chat-window">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+            if (message) {
+                addMessage(message, 'user-message');
+                userInput.value = '';
+                // Simulate bot response
+                setTimeout(() => {
+                    const botResponse = getBotResponse(message);
+                    addMessage(botResponse, 'bot-message');
+                }, 1000);
+            }
+        }
+
+        function addMessage(text, className) {
+            const chatWindow = document.getElementById('chat-window');
+            const messageElement = document.createElement('div');
+            messageElement.className = `chat-message ${className}`;
+            messageElement.innerHTML = `<div class="message-content">${text}</div>`;
+            chatWindow.appendChild(messageElement);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            // Simple responses based on keywords
+            const responses = {
+                hello: "Hi there! How can I assist you today?",
+                help: "Sure, I'm here to help! What do you need assistance with?",
+                order: "Can you provide your order number so I can check the details?",
+                thanks: "You're welcome! If you have any more questions, feel free to ask.",
+                hours: "Our working hours are from 9 AM to 5 PM, Monday to Friday.",
+                location: "We are located at 123 Main Street, Anytown, USA.",
+                price: "Could you please specify which product's price you are inquiring about?",
+                contact: "You can contact us at (123) 456-7890 or email us at support@example.com.",
+                refund: "For refunds, please contact our support team with your order number.",
+                payment: "We accept credit cards, PayPal, and bank transfers.",
+                shipping: "Shipping typically takes 3-5 business days.",
+                warranty: "Our products come with a 1-year warranty.",
+                exchange: "To exchange a product, please contact our support team.",
+                return_policy: "You can return products within 30 days of purchase.",
+                feedback: "We appreciate your feedback! Please share your thoughts with us.",
+                weather: "Currently, the weather is sunny with a slight chance of rain in the afternoon.",
+                support: "Our support team is available 24/7 to assist you with any issues.",
+                appointment: "To schedule an appointment, please visit our website or call our support team.",
+                cancel_order: "To cancel an order, please provide your order number and we will process the cancellation.",
+                update_info: "You can update your information in the 'My Account' section of our website.",
+                newsletter: "You can subscribe to our newsletter for the latest updates and offers.",
+                promotion: "Currently, we have a 20% discount on all electronics.",
+                events: "Our upcoming events include a tech expo on July 15th and a webinar on AI trends on August 20th.",
+                job_openings: "We have several job openings. Please visit our careers page for more details.",
+                social_media: "Follow us on Facebook, Twitter, and Instagram for the latest updates.",
+                training: "We offer training sessions every Friday. Sign up on our website.",
+                faq: "For more information, please visit our FAQ page.",
+                new_products: "We have recently launched a new line of smart home devices.",
+                testimonials: "Read testimonials from our satisfied customers on our website.",
+                menu: "Our menu includes a variety of dishes. Please visit our website to see the full menu.",
+                reservation: "To make a reservation, please call us at (123) 456-7890.",
+                location_hours: "We have multiple locations. Please visit our website for details and hours of operation.",
+                special_offers: "Check out our website for current special offers and discounts.",
+                loyalty_program: "Join our loyalty program to earn points and receive exclusive offers.",
+                product_availability: "Please check our website for the availability of specific products.",
+                tech_support: "For technical support, please contact our support team at techsupport@example.com.",
+                mobile_app: "Download our mobile app from the App Store or Google Play.",
+                order_status: "To check the status of your order, please enter your order number on our website.",
+                shipping_info: "We offer free shipping on orders over $50.",
+                gift_cards: "Gift cards are available for purchase on our website.",
+                customer_service: "Our customer service team is available Monday through Friday, 9 AM to 5 PM.",
+                recipes: "Find delicious recipes on our blog.",
+                sustainability: "We are committed to sustainability. Learn more about our efforts on our website.",
+                press_inquiries: "For press inquiries, please contact our media relations team at press@example.com.",
+                partnerships: "We are open to partnerships. Please contact us at partnerships@example.com.",
+                volunteer: "Join our volunteer program and help make a difference in the community.",
+                donations: "We accept donations through our website to support various causes.",
+                sponsorship: "Interested in sponsorship opportunities? Contact us at sponsor@example.com.",
+                blog: "Read our latest blog posts for news, tips, and insights.",
+                community: "Join our community forum to connect with other customers.",
+                product_reviews: "Check out product reviews on our website before making a purchase.",
+                about_us: "Learn more about our company and our mission on the 'About Us' page.",
+                careers: "Explore career opportunities on our 'Careers' page.",
+                contact_info: "Find all our contact information on the 'Contact Us' page.",
+                store_locator: "Use our store locator to find a store near you.",
+                terms_conditions: "Read our terms and conditions on our website.",
+                privacy_policy: "Your privacy is important to us. Read our privacy policy for more information.",
+                community_guidelines: "Please follow our community guidelines when participating in our forums.",
+                code_of_conduct: "Our code of conduct outlines the standards we expect from our employees and partners.",
+                safety_info: "Read important safety information about our products on our website.",
+                shipping_returns: "Get detailed information about shipping and returns on our 'Shipping & Returns' page.",
+                technical_specs: "Find technical specifications for our products on their respective pages.",
+                user_manuals: "Download user manuals and guides from our support page.",
+                troubleshooting: "Visit our troubleshooting page for help with common issues.",
+                software_updates: "Check for the latest software updates on our website.",
+                workshops: "Sign up for our workshops to learn more about our products and services.",
+                webinars: "Join our webinars for expert insights and discussions.",
+                virtual_tours: "Take a virtual tour of our facilities on our website.",
+                success_stories: "Read success stories from our customers and partners.",
+                news: "Stay updated with the latest news and announcements on our news page.",
+                press_releases: "Read our latest press releases on our media page.",
+                events_calendar: "Check our events calendar for upcoming events and activities.",
+                membership: "Become a member to enjoy exclusive benefits and discounts.",
+                advisory_board: "Meet our advisory board and learn about their expertise.",
+                research: "Read about our latest research and innovations on our website.",
+                case_studies: "Explore case studies to see how our solutions are applied in real-world scenarios.",
+                white_papers: "Download our white papers for in-depth information on industry topics.",
+                e_books: "Access our collection of e-books on various subjects.",
+                newsletters: "Subscribe to our newsletters for the latest updates and insights.",
+                podcasts: "Listen to our podcasts for discussions with industry experts.",
+                videos: "Watch videos about our products and services on our video page.",
+                tutorials: "Follow our tutorials for step-by-step instructions and tips.",
+                faqs: "Find answers to frequently asked questions on our FAQ page.",
+                contact_support: "If you need further assistance, please contact our support team.",
+                default: "I'm sorry, I didn't understand that. Can you please rephrase?"
+            };
+
+            // Check message content for keywords and return the appropriate response
+            const lowerCaseMessage = message.toLowerCase();
+            for (let key in responses) {
+                if (lowerCaseMessage.includes(key)) {
+                    return responses[key];
+                }
+            }
+            return responses.default;
+        }
+    </script>
+</body>
+</html>
